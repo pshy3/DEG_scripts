@@ -21,7 +21,7 @@ for filenames in glob.glob(substring):
 
 	#cufflinks -p 8 -G ".$gene_gtf." sorted_bams_FIXED/".$1."_aligned.bam -o cufflinks_FIXED/".$1.") >& logs_cufflinks_FIXED/log_cuff_".$1." &";
 
-    str1 = "(cufflinks -p 4 -G "+reference_file+" "+filenames+" -o cufflinks/"+op_file+") >& cufflinks/logs_cufflinks/log_"+op_file+".txt &"
+    str1 = "(cufflinks -p 2 -G "+reference_file+" "+filenames+" -o cufflinks/"+op_file+") >& cufflinks/logs_cufflinks/log_"+op_file+".txt &"
 
         
     print(str1+"\n")

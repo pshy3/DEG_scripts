@@ -47,9 +47,10 @@ for index,row in comp.iterrows():
 #    if not os.path.exists('./counts/count_logs/'):
 #        os.makedirs('./counts/count_logs/')
 
-    if comp.iloc[index].Condition != condition[0]:
-        str1 = "(cuffdiff -p 2 -o cuffdiff/"+comp.iloc[index].Condition+"/"+comp.iloc[index].Reference+"_vs_"+comp.iloc[index].Experiment+" "+reference_file+" "+comp.iloc[index].den+" "+comp.iloc[index].num+") >& cuffdiff/"+comp.iloc[index].Condition+"/logs_cuffdiff/log_"+comp.iloc[index].Reference+"_vs_"+comp.iloc[index].Experiment+".txt &"
+    #if comp.iloc[index].Condition != condition[0]:
+    str1 = "(cuffdiff -p 2 -o cuffdiff/"+comp.iloc[index].Condition+"/"+comp.iloc[index].Experiment+"_vs_"+comp.iloc[index].Reference+" "+reference_file+" "+comp.iloc[index].den+" "+comp.iloc[index].num+") >& cuffdiff/"+comp.iloc[index].Condition+"/logs_cuffdiff/log_"+comp.iloc[index].Experiment+"_vs_"+comp.iloc[index].Reference+".txt &"
         
-        print(str1+"\n")
+    print(str1+"\n")
         
-        os.system(str1)
+   # os.system(str1)
+

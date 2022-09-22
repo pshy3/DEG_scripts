@@ -3,7 +3,7 @@ import os
 
 reference_file = "../../../reference/Mus_musculus.GRCm39.107.gff3"
 substring = "*.bam"
-splitting = ".bam"
+splitting = "_S1"
 
 for filename in glob.glob(substring):
     op_file = filename.split(splitting)[0]
