@@ -3,7 +3,7 @@ import os
 import glob
 
 
-reference_file = "../reference/GRCm39"
+#reference_file = "../reference/GRCm39"
 substring = "*1_001.fastq.gz"
 
 if not os.path.exists('./trimmed_files/'):
