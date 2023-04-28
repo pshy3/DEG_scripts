@@ -1,0 +1,5 @@
+Condition,Reference,Experiment
+Cuffdiff,Undif_D4_Saline,Undif_D4_Oxy
+Cuffdiff,Dif_D6_Saline,Dif_D6_Oxy
+Cuffdiff,Undif_D4_Saline,Dif_D6_Saline
+Cuffdiff,Undif_D4_Oxy,Dif_D6_Oxy
