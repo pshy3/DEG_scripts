@@ -1,0 +1,8 @@
+Order of use for doing the RNA-seq analysis:
+1. run_trim.py
+2. Run the hisat build and get the fa file for the genome build
+3. run_alignment.py
+4. run_sorting.py
+5. run_cufflinks.py
+6. run_cuffdiff.py using comp.csv and the gff3 files (I made the comp file myself so you can use other methods you might like for quickly adding all the cuffdiff comparisons)
+7. move_cufflinks.py and move_cuffdiff_results.py (for extracting csv file and doing some corrections with values going to infinity)
