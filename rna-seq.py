@@ -1,19 +1,17 @@
-import configparser
+import json
 import csv
 import os
 import glob
 
-# Create a configparser object
-config = configparser.ConfigParser()
-
 # Read the configuration file
-config.read('config.ini')
+with open('config.json', 'r') as f:
+    config = json.load(f)
 
 # Access the configuration values
-substring = config.get('General', 'Substring')
-threads = config.get('General', 'Threads')
-reference_link = config.get('General', 'Reference_Link')
-output_folder = config.get('General', 'Output_Folder')
+substring = config['General']['Substring']
+threads = config['General']['Threads']
+reference_link = config['General']['Reference_Link']
+output_folder = config['General']['Output_Dir']
 
 def folder_structure():
     if not os.path.exists(output_folder):
