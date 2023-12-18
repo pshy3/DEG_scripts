@@ -1,72 +1,117 @@
 #!/usr/bin/env nextflow
 
-params.reads = "$workflow.launchDir/reads/*_{1,2}.fq.gz"
-params.assembly = "$workflow.launchDir/assembly/assembly.fasta"
+reads_input = "$workflow.launchDir/"+params.reads
+reads_dir = "$workflow.launchDir/"+params.reads_dir
 
-println "$workflow.launchDir"
+workflow {
+    // species_ch = Channel.value(params.species)
+    // data_dir_ch = Channel.value(params.data_dir)
+    reads_qc_ch = Channel.fromPath(reads_dir)
+    reads_ch = Channel.fromFilePairs(reads_input, size: 2)
 
-process get_reference_genome{
+    get_reference_genome(params.species, params.data_dir)
+        .set { genome_ch}
+
+    run_fastqc(reads_qc_ch)
+        .set { fastqc_ch }
+
+    // run_multiqc(fastqc_ch.collect())
+
+    build_hisat2_index(genome_ch.fasta)
+        .set { index_ch }
+}
+
+process get_reference_genome {
+    conda 'lftp' // install lftp
+    conda 'gunzip' // install gunzip
+
+    input:
+    val species
+    val data_dir
+
     output:
-    file "assembly/assembly.fasta" into assembly
+    path("*.dna.toplevel.fa", emit: 'fasta')
+    path("*.gff3", emit: 'gff3')
+
+    publishDir "${workflow.workDir}/../results/reference", mode: 'copy'
 
     script:
-    """
-    wget -r -nd --no-parent https://ftp.ensembl.org/pub/current_fasta/mus_musculus/dna_index/
-    gunzip *.dna.toplevel.fa.gz
-    mv GCF_000006745.1_ASM674v1_genomic.fna assembly/assembly.fasta
-    """
+    if (data_dir != 'default') {
+        """
+        cp ${data_dir}/* .
+        """
+    } else {
+        """
+        echo "Downloading reference genome for ${species} from Ensembl FTP server..."
+        mkdir -p reference
+        lftp -c "open -e 'mget -c /pub/current_fasta/${species}/dna_index/*dna.toplevel.fa.gz' ftp://ftp.ensembl.org"
+        lftp -c "open -e 'mget -c /pub/current_gff3/${species}/*chr.gff3.gz' ftp://ftp.ensembl.org"
+        gunzip *.gz
+        """
+    }
 }
 
 process run_fastqc {
+    conda 'fastqc' // install fastqc
+
     input:
-    file reads from reads
+    path reads_qc_ch
 
     output:
-    file "fastqc/*_fastqc.html" into fastqc
+    path("*_fastqc.zip", emit: 'zip')
+    path("*_fastqc.html", emit: 'html')
+
+    publishDir "${workflow.workDir}/../results/fastqc_untrimmed", mode: 'copy'
 
     script:
     """
-    fastqc -o fastqc ${reads}
+    fastqc ${reads_qc_ch} -o .
     """
 }
 
 process run_multiqc {
     input:
-    file fastqc_reports from fastqc
+    path "*"
 
     output:
-    file "multiqc_report.html" into multiqc
+    path("multiqc_report.html")
 
-    script:
+    publishDir "${workflow.workDir}/../results/multiqc_untrimmed", mode: 'copy'
+
     """
-    multiqc fastqc_reports
+    multiqc . -o .
     """
 }
 
 process build_hisat2_index {
+    conda 'hisat2' // install hisat2
+
     input:
-    file assembly from assembly
+    path fasta
 
     output:
-    file "index/*" into index
+    path("assembly", emit: 'index')
 
     script:
     """
-    hisat2-build ${assembly} index/assembly
+    hisat2-build ${fasta} assembly
     """
 }
 
 process run_hisat2 {
+    tag "Alignment on ${sample_id}"
+
     input:
-    file reads from reads
-    file index from index
+    path index
+    tuple val(sample_id), path(reads)
 
     output:
-    file "alignment/*" into alignment
+    path "alignment/*"
 
     script:
     """
-    hisat2 -x ${index}/assembly -1 ${reads[0]} -2 ${reads[1]} -S alignment/alignment.sam
+    mkdir -p alignment
+    hisat2 -x ${index}/assembly -1 ${reads[0]} -2 ${reads[1]} -S alignment/${sample_id}.sam
     """
 }
 
@@ -190,19 +235,3 @@ process email_completion {
     """
 }
 
-workflow {
-    get_reference_genome()
-    run_fastqc()
-    run_multiqc(fastqc_reports)
-    build_hisat2_index(assembly)
-    run_hisat2(index)
-    run_samtools(alignment)
-    run_counts(alignment)
-    run_cufflinks(alignment)
-    run_cuffdiff(alignment, gtf)
-    run_sorting(alignment)
-    move_diff(diff)
-    run_edgeR(counts, diff)
-    run_deseq2(counts, diff)
-    email_completion(multiqc_report)
-}
