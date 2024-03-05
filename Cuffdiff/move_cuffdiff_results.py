@@ -5,7 +5,7 @@ import numpy as np
 import math
 import os 
 
-identifier = "D"
+identifier = "_vs_"
 
 diff = []
 
@@ -43,7 +43,7 @@ for i in range(len(diff)):
     #main['log2(fold_change)'].replace(np.inf,(math.log2(main['value_1'] + 1 / main['value_2'] + 1)),inplace=True)
     #main['log2(fold_change)'].replace(np.inf,0.00000001,inplace=True)
     #main['log2(fold_change)'].replace([0.00000001],(main['log2(fold_change)'].max()),inplace=True)
-    print(main.tail())
+    # print(main.tail())
     main.to_csv("./cuffdiff_files/"+diff[i]+"_gene_exp.csv", sep = ',', index = False)
        
 

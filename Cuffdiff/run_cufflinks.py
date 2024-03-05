@@ -3,13 +3,13 @@ import os
 
 substring = "*.bam"
 splitting = "_sorted.bam"
-reference_file = "../../../reference/Mus_musculus.GRCm39.107.gff3"
+reference_file = "../reference/Homo_sapiens.GRCh38.111.gtf"
 
-if not os.path.exists('./cufflinks/'):
-    os.makedirs('./cufflinks/')
+if not os.path.exists('../cufflinks/'):
+    os.makedirs('../cufflinks/')
 
-if not os.path.exists('./cufflinks/logs_cufflinks/'):
-    os.makedirs('./cufflinks/logs_cufflinks/')
+if not os.path.exists('../cufflinks/logs_cufflinks/'):
+    os.makedirs('../cufflinks/logs_cufflinks/')
 
 
 for filenames in glob.glob(substring):
@@ -21,7 +21,7 @@ for filenames in glob.glob(substring):
 
 	#cufflinks -p 8 -G ".$gene_gtf." sorted_bams_FIXED/".$1."_aligned.bam -o cufflinks_FIXED/".$1.") >& logs_cufflinks_FIXED/log_cuff_".$1." &";
 
-    str1 = "(cufflinks -p 2 -G "+reference_file+" "+filenames+" -o cufflinks/"+op_file+") >& cufflinks/logs_cufflinks/log_"+op_file+".txt &"
+    str1 = "nohup /home/pshy3/tools/cufflinks-2.2.1.Linux_x86_64/cufflinks --no-update-check -p 2 -G "+reference_file+" "+filenames+" -o ../cufflinks/"+op_file+" > ../cufflinks/logs_cufflinks/log_"+op_file+".txt 2>&1 &"
 
         
     print(str1+"\n")

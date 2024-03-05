@@ -1,5 +1,10 @@
 Condition,Reference,Experiment
-Cuffdiff,Undif_D4_Saline,Undif_D4_Oxy
-Cuffdiff,Dif_D6_Saline,Dif_D6_Oxy
-Cuffdiff,Undif_D4_Saline,Dif_D6_Saline
-Cuffdiff,Undif_D4_Oxy,Dif_D6_Oxy
+Autophagy,C,Z48h
+Autophagy,C,HCQ48h
+Autophagy,C,Rapa48h
+Autophagy,Z48h,Rapa48h
+Autophagy,Z48h,HCQ48h
+Autophagy,Rapa48h,HCQ48h
+ER_Stress,C,Z48h
+ER_Stress,C,PBA48h
+ER_Stress,Z48h,PBA48h

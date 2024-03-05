@@ -2,7 +2,7 @@ import os
 import glob
 import pandas as pd
 
-identifier = "D"
+identifier = "[1|2|3]"
 
 if not os.path.exists('./fpkm/'):
         os.makedirs('./fpkm/')
