@@ -15,6 +15,7 @@ if not os.path.exists('./cuffdiff_files/'):
 
 # glob for getting all the files in the directory
 for filenames in glob.glob("*"+identifier+"*/"):
+    print(filenames)
     fil = filenames.split("/")[0]
     diff.append(fil)
 
